@@ -1,0 +1,28 @@
+services:
+  web:
+    build: . # Constroi a imagem a partir do Dockerfile no diretório atual
+    ports:
+      - "3000:3000" # Mapeia a porta 3000 do container para a porta 3000 do host
+    volumes:
+      - .:/app # Monta o diretório do projeto no container para hot reload
+      - /app/node_modules # Evita que a pasta node_modules do host interfira com o container
+    environment:
+      NODE_ENV: development # Define o ambiente para desenvolvimento
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    depends_on:
+      - db
+  db:
+    image: postgres:15-alpine 
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+    - db_data:/var/lib/postgresql/data/
+
+volumes:
+  db_data:
